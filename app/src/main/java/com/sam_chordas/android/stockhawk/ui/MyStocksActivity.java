@@ -46,6 +46,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
    */
   private CharSequence mTitle;
   private Intent mServiceIntent;
+  private Intent lineGraph;
   private ItemTouchHelper mItemTouchHelper;
   private static final int CURSOR_LOADER_ID = 0;
   private QuoteCursorAdapter mCursorAdapter;
@@ -67,6 +68,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
     mServiceIntent = new Intent(this, StockIntentService.class);
+    lineGraph = new Intent(this, LineGraphActivity.class);
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
       mServiceIntent.putExtra("tag", "init");
@@ -84,6 +86,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
+                mCursor.moveToPosition(position);   // move to correct row in database
+                String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+                lineGraph.putExtra("symbol", symbol);
+                startActivity(lineGraph);
                 //TODO:
                 // do something on item click
               }
