@@ -54,6 +54,7 @@ public class LineGraphActivity extends Activity {
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
     private String END_URL = "%20and%20startDate%20%3D%20\"2009-09-11\"%20and%20endDate%20%3D%20\"2010-03-10\"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
     private ArrayList<String> stockHistory = new ArrayList<>();
+    private ArrayList<String> dateStock = new ArrayList<>();
     private ArrayList<String> retrievedStockHistory = new ArrayList<>();
     private final String[] mLabels = {"o", "p", "q", "r"};
     private final float[] mValues = {12f, 80f, 60f, 80f};
@@ -83,6 +84,30 @@ public class LineGraphActivity extends Activity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+
+
+        for (int i = 0; i < retrievedStockHistory.size(); i++) {
+            dateStock.add(retrievedStockHistory.get(i));
+            retrievedStockHistory.remove(i);
+
+        }
+
+
+
+        int listSize = retrievedStockHistory.size();
+
+        for (int i = 0; i<listSize; i++){
+            Log.i("the date: ", retrievedStockHistory.get(i));
+        }
+
+
+        String[] stockArr = new String[retrievedStockHistory.size()];
+        stockArr = retrievedStockHistory.toArray(stockArr);
+
+        String[] dateArr = new String[dateStock.size()];
+        dateArr = dateStock.toArray(dateArr);
+
 
         LineChartView lineChartView = (LineChartView) findViewById(R.id.linechart);
 
@@ -117,14 +142,14 @@ public class LineGraphActivity extends Activity {
                 connection.connect();
                 InputStream stream = connection.getInputStream();
                 String response = streamToString(stream);
-                result = parseReview(response);
+                result = parseStockClose(response);
             } catch (Exception e) {
                 Log.d("FAIL", e.getLocalizedMessage());
             }
             return result;
         }
 
-        private ArrayList<String> parseReview(String result) {
+        private ArrayList<String> parseStockClose(String result) {
             JSONArray resultsArray = null;
             JSONObject jsonObject = null;
 
@@ -133,8 +158,11 @@ public class LineGraphActivity extends Activity {
                 resultsArray = jsonObject.getJSONObject("query").getJSONObject("results").getJSONArray("quote");
                 for (int i = 0; i < resultsArray.length(); i++) {
                     jsonObject = resultsArray.optJSONObject(i);
+                    String stockDate = jsonObject.optString("Date");
+                    stockHistory.add(stockDate);
                     String stockPrice = jsonObject.optString("Close");
                     stockHistory.add(stockPrice);
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
