@@ -92,8 +92,11 @@ public class LineGraphActivity extends Activity {
             retrievedStockHistory.remove(i);
 
         }
+        float [] floatValues = new float[retrievedStockHistory.size()];
 
-
+        for (int i = 0; i < retrievedStockHistory.size(); i++) {
+            floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
+        }
 
         int listSize = retrievedStockHistory.size();
 
@@ -111,7 +114,7 @@ public class LineGraphActivity extends Activity {
 
         LineChartView lineChartView = (LineChartView) findViewById(R.id.linechart);
 
-        LineSet dataset = new LineSet(mLabels, mValues);
+        LineSet dataset = new LineSet(dateArr, floatValues);
         dataset.setColor(Color.parseColor("#53c1bd"))
                 .setFill(Color.parseColor("#3d6c73"))
                 .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
