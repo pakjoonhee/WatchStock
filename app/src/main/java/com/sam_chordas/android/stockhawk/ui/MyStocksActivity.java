@@ -71,7 +71,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private ArrayList<String> reviewsList;
   String author;
   boolean linkWorks;
-  boolean linkReallyWorks;
+  boolean linkReallyWorks = false;
   String testing;
 
   @Override
@@ -122,84 +122,56 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         if (isConnected){
-          new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
-              .content(R.string.content_test)
-              .inputType(InputType.TYPE_CLASS_TEXT)
-              .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
-                @Override public void onInput(MaterialDialog dialog, CharSequence input) {
-                  // On FAB click, receive user input. Make sure the stock doesn't already exist
-                  // in the DB and proceed accordingly
-                  String userInput = input.toString().toUpperCase();
-                  Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                      new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
-                      new String[] { userInput }, null);
-                  testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
-                          "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
-                  try {
-                    linkReallyWorks = new AsyncVideoTask().execute(testing).get();
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  } catch (ExecutionException e) {
-                    e.printStackTrace();
-                  }
-                  if (c.getCount() != 0) {
-                    Toast toast =
-                        Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
-                            Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                    toast.show();
-                    return;
-                  } else if (linkReallyWorks == true){
-                    // Add the stock to DB
-                    mServiceIntent.putExtra("tag", "add");
-                    mServiceIntent.putExtra("symbol", userInput);
-                    startService(mServiceIntent);
-                  } else if (linkReallyWorks == false) {
-                    Toast toast =
-                            Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
-                                    Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                    toast.show();
+          while (!linkReallyWorks) {
+            new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
+                    .content(R.string.content_test)
+                    .inputType(InputType.TYPE_CLASS_TEXT)
+                    .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                      @Override
+                      public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // On FAB click, receive user input. Make sure the stock doesn't already exist
+                        // in the DB and proceed accordingly
+                        String userInput = input.toString().toUpperCase();
+                        Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+                                new String[]{userInput}, null);
+                        testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" + userInput + "\"" +
+                                "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+                        try {
+                          linkReallyWorks = new AsyncVideoTask().execute(testing).get();
+                        } catch (InterruptedException e) {
+                          e.printStackTrace();
+                        } catch (ExecutionException e) {
+                          e.printStackTrace();
+                        }
+                        if (c.getCount() != 0) {
+                          Toast toast =
+                                  Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                                          Toast.LENGTH_LONG);
+                          toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                          toast.show();
+                          return;
+                        } else if (linkReallyWorks == true) {
+                          // Add the stock to DB
+                          mServiceIntent.putExtra("tag", "add");
+                          mServiceIntent.putExtra("symbol", userInput);
+                          startService(mServiceIntent);
+                        } else if (linkReallyWorks == false) {
+                          Toast toast =
+                                  Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
+                                          Toast.LENGTH_LONG);
+                          toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                          toast.show();
 
-                    new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
-                            .content(R.string.content_test)
-                            .inputType(InputType.TYPE_CLASS_TEXT)
-                            .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
-                                      @Override
-                                      public void onInput(MaterialDialog dialog, CharSequence input) {
-                                        // On FAB click, receive user input. Make sure the stock doesn't already exist
-                                        // in the DB and proceed accordingly
-                                        String userInput = input.toString().toUpperCase();
-                                        Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                                                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                                                new String[]{userInput}, null);
-                                        String newTesting = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
-                                                "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
-                                        try {
-                                          linkReallyWorks = new AsyncVideoTask().execute(newTesting).get();
-                                        } catch (InterruptedException e) {
-                                          e.printStackTrace();
-                                        } catch (ExecutionException e) {
-                                          e.printStackTrace();
-                                        }
-                                        if (linkReallyWorks == true) {
-                                          mServiceIntent.putExtra("tag", "add");
-                                          mServiceIntent.putExtra("symbol", userInput);
-                                          startService(mServiceIntent);
-                                        }
-                                      }
+                        }
 
-                            }).show();
-
-                  }
-
-                }
-              })
-              .show();
+                      }
+                    })
+                    .show();
+          }
         } else {
           networkToast();
         }
-
       }
     });
 
