@@ -72,6 +72,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   String author;
   boolean linkWorks;
   boolean linkReallyWorks;
+  String testing;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                   Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                       new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
                       new String[] { userInput }, null);
-                  String testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
+                  testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
                           "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
                   try {
                     linkReallyWorks = new AsyncVideoTask().execute(testing).get();
@@ -159,7 +160,37 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                     Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();
-                    return;
+
+                    new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
+                            .content(R.string.content_test)
+                            .inputType(InputType.TYPE_CLASS_TEXT)
+                            .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                                      @Override
+                                      public void onInput(MaterialDialog dialog, CharSequence input) {
+                                        // On FAB click, receive user input. Make sure the stock doesn't already exist
+                                        // in the DB and proceed accordingly
+                                        String userInput = input.toString().toUpperCase();
+                                        Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                                                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+                                                new String[]{userInput}, null);
+                                        String newTesting = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
+                                                "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+                                        try {
+                                          linkReallyWorks = new AsyncVideoTask().execute(newTesting).get();
+                                        } catch (InterruptedException e) {
+                                          e.printStackTrace();
+                                        } catch (ExecutionException e) {
+                                          e.printStackTrace();
+                                        }
+                                        if (linkReallyWorks == true) {
+                                          mServiceIntent.putExtra("tag", "add");
+                                          mServiceIntent.putExtra("symbol", userInput);
+                                          startService(mServiceIntent);
+                                        }
+                                      }
+
+                            }).show();
+
                   }
 
                 }
