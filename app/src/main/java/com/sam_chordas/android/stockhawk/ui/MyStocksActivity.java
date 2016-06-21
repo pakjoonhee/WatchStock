@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +37,19 @@ import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
   /**
@@ -53,6 +68,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Context mContext;
   private Cursor mCursor;
   boolean isConnected;
+  private ArrayList<String> reviewsList;
+  String author;
+  boolean linkWorks;
+  boolean linkReallyWorks;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +128,19 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 @Override public void onInput(MaterialDialog dialog, CharSequence input) {
                   // On FAB click, receive user input. Make sure the stock doesn't already exist
                   // in the DB and proceed accordingly
+                  String userInput = input.toString().toUpperCase();
                   Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                       new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
-                      new String[] { input.toString() }, null);
+                      new String[] { userInput }, null);
+                  String testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" +  userInput + "\"" +
+                          "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+                  try {
+                    linkReallyWorks = new AsyncVideoTask().execute(testing).get();
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  } catch (ExecutionException e) {
+                    e.printStackTrace();
+                  }
                   if (c.getCount() != 0) {
                     Toast toast =
                         Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
@@ -119,12 +148,20 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();
                     return;
-                  } else {
+                  } else if (linkReallyWorks == true){
                     // Add the stock to DB
                     mServiceIntent.putExtra("tag", "add");
-                    mServiceIntent.putExtra("symbol", input.toString());
+                    mServiceIntent.putExtra("symbol", userInput);
                     startService(mServiceIntent);
+                  } else if (linkReallyWorks == false) {
+                    Toast toast =
+                            Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
+                                    Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                    toast.show();
+                    return;
                   }
+
                 }
               })
               .show();
@@ -161,6 +198,66 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
   }
 
+  public class AsyncVideoTask extends AsyncTask<String, Void, Boolean> {
+    HttpURLConnection connection = null;
+
+    @Override
+    protected Boolean doInBackground(String... params) {
+      String result = null;
+      try {
+        URL url = new URL(params[0]);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.connect();
+        InputStream stream = connection.getInputStream();
+        String response = streamToString(stream);
+        result = parseReview(response);
+
+        if (result == "null") {
+          return linkWorks = false;
+        } else {
+          return linkWorks = true;
+        }
+
+      } catch (Exception e) {
+        Log.d("tag", e.getLocalizedMessage());
+      }
+      return linkWorks;
+    }
+
+    private String parseReview(String result) {
+      JSONObject jsonObject = null;
+      JSONObject resultsArray = null;
+      String stockDate = null;
+      try {
+        jsonObject = new JSONObject(result);
+        resultsArray = jsonObject.getJSONObject("query").getJSONObject("results").getJSONObject("quote");
+        stockDate = resultsArray.optString("Ask");
+      } catch (JSONException e1) {
+        e1.printStackTrace();
+      }
+      return stockDate;
+    }
+
+    public String streamToString(InputStream stream) throws IOException {
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+      String line;
+      String result = "";
+      while ((line = bufferedReader.readLine()) != null) {
+        result += line;
+      }
+
+      if (null != stream) {
+        stream.close();
+      }
+      return result;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+      super.onPostExecute(result);
+
+    }
+  }
 
   @Override
   public void onResume() {
