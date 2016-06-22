@@ -3,6 +3,7 @@ package com.sam_chordas.android.stockhawk.ui;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -22,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -73,7 +76,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   boolean linkWorks;
   boolean linkReallyWorks = false;
   String testing;
-  MaterialDialog dialog;
+  MaterialDialog d;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +126,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         if (isConnected){
-          dialog = new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
+          d = new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                   .content(R.string.content_test)
                   .inputType(InputType.TYPE_CLASS_TEXT)
                   .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
@@ -157,13 +160,27 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         mServiceIntent.putExtra("symbol", userInput);
                         startService(mServiceIntent);
                       } else if (linkReallyWorks == false) {
+                        d.setOnShowListener(new DialogInterface.OnShowListener() {
+                          @Override
+                          public void onShow(DialogInterface dialog) {
+                            View positive = d.getActionButton(DialogAction.POSITIVE);
+                            positive.setOnClickListener(new View.OnClickListener() {
 
+                              @Override
+                              public void onClick(View view) {
+                                Toast toast =
+                                        Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
+                                                Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                                toast.show();
+                                // TODO Do something
 
-                        Toast toast =
-                                Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
-                                        Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                        toast.show();
+                                //Dismiss once everything is OK.
+                                d.dismiss();
+                              }
+                            });
+                          }
+                        });
 
                       }
 
