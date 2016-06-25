@@ -23,6 +23,8 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     Context mContext = null;
     String symbol;
     String price;
+    String current;
+    Cursor initQueryCursor;
 
     public WidgetDataProvider(Context context, Intent intent) {
         mContext = context;
@@ -30,12 +32,13 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onCreate() {
-        Cursor initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE}, null,
+        initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, null,
                 null, null);
         if(initQueryCursor != null && initQueryCursor.moveToFirst() ){
             symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
             price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
+            current = initQueryCursor.getString(initQueryCursor.getColumnIndex("is_current"));
             initQueryCursor.close();
         }
 
@@ -53,7 +56,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getCount() {
-        return mCollection.size();
+        return initQueryCursor.getCount();
     }
 
     @Override
