@@ -2,8 +2,12 @@ package com.sam_chordas.android.stockhawk.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +21,8 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     List<String> mCollection = new ArrayList<>();
     Context mContext = null;
+    String symbol;
+    String price;
 
     public WidgetDataProvider(Context context, Intent intent) {
         mContext = context;
@@ -24,7 +30,15 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onCreate() {
-        initData();
+        Cursor initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE}, null,
+                null, null);
+        if(initQueryCursor != null && initQueryCursor.moveToFirst() ){
+            symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
+            price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
+            initQueryCursor.close();
+        }
+
     }
 
     @Override
@@ -46,7 +60,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     public RemoteViews getViewAt(int position) {
         RemoteViews view = new RemoteViews(mContext.getPackageName(),
                 android.R.layout.simple_list_item_1);
-        view.setTextViewText(android.R.id.text1, mCollection.get(position));
+        view.setTextViewText(android.R.id.text1, symbol);
         return view;
     }
 
