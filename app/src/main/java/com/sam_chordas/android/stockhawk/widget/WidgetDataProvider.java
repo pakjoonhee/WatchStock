@@ -61,6 +61,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         RemoteViews view = new RemoteViews(mContext.getPackageName(),
                 android.R.layout.simple_list_item_1);
         view.setTextViewText(android.R.id.text1, symbol);
+        view.setTextViewText(android.R.id.text2, price);
         return view;
     }
 
