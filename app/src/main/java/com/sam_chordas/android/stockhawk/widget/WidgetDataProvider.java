@@ -3,10 +3,12 @@ package com.sam_chordas.android.stockhawk.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteDatabase;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 import java.util.ArrayList;
@@ -32,9 +34,11 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onCreate() {
+        SQLiteDatabase db;
         initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, null,
+                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='",
                 null, null);
+
         if(initQueryCursor != null && initQueryCursor.moveToFirst() ){
             symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
             price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));

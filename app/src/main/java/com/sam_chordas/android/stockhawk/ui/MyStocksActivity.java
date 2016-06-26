@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -77,6 +78,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   boolean linkReallyWorks = false;
   String testing;
   MaterialDialog d;
+  String userInput;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                       // On FAB click, receive user input. Make sure the stock doesn't already exist
                       // in the DB and proceed accordingly
-                      String userInput = input.toString().toUpperCase();
+                      userInput = input.toString().toUpperCase();
                       Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                               new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
                               new String[]{userInput}, null);
@@ -160,32 +162,30 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         mServiceIntent.putExtra("symbol", userInput);
                         startService(mServiceIntent);
                       } else if (linkReallyWorks == false) {
-                        d.setOnShowListener(new DialogInterface.OnShowListener() {
-                          @Override
-                          public void onShow(DialogInterface dialog) {
-                            View positive = d.getActionButton(DialogAction.POSITIVE);
-                            positive.setOnClickListener(new View.OnClickListener() {
-
-                              @Override
-                              public void onClick(View view) {
-                                Toast toast =
-                                        Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
-                                                Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                                toast.show();
-                                // TODO Do something
-
-                                //Dismiss once everything is OK.
-                                d.dismiss();
-                              }
-                            });
-                          }
-                        });
-
+                        Toast toast =
+                                Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
+                                        Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                        toast.show();
                       }
 
                     }
-                  }).show();
+                  }).onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      new MaterialDialog.Builder(mContext)
+                              .title("crap")
+                              .content("crap")
+                              .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                              .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(MaterialDialog dialog, CharSequence input) {
+                                  // Do something
+                                }
+                              }).show();
+                    }
+                  })
+                  .show();
 
         } else {
           networkToast();
