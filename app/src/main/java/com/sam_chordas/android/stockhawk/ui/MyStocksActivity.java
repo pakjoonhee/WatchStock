@@ -131,6 +131,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
           d = new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                   .content(R.string.content_test)
                   .inputType(InputType.TYPE_CLASS_TEXT)
+                  .negativeText("Cancel")
+                  .autoDismiss(false)
                   .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
@@ -158,6 +160,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         return;
                       } else if (linkReallyWorks == true) {
                         // Add the stock to DB
+                        d.dismiss();
                         mServiceIntent.putExtra("tag", "add");
                         mServiceIntent.putExtra("symbol", userInput);
                         startService(mServiceIntent);
@@ -170,19 +173,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                       }
 
                     }
-                  }).onPositive(new MaterialDialog.SingleButtonCallback() {
+                  }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                      new MaterialDialog.Builder(mContext)
-                              .title("crap")
-                              .content("crap")
-                              .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                              .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
-                                @Override
-                                public void onInput(MaterialDialog dialog, CharSequence input) {
-                                  // Do something
-                                }
-                              }).show();
+                      d.dismiss();
                     }
                   })
                   .show();
