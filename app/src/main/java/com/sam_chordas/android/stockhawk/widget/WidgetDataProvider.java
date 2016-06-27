@@ -33,6 +33,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     String price;
     String current;
     Cursor initQueryCursor;
+    String id;
 
     static final int INDEX_ID = 0;
     static final int INDEX_SYMBOL = 1;
@@ -46,10 +47,11 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     @Override
     public void onCreate() {
         initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                new String[] {QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
+                new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
                 null, null);
 
         if(initQueryCursor != null && initQueryCursor.moveToFirst() ){
+            id = initQueryCursor.getString(initQueryCursor.getColumnIndex("_id"));
             symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
             price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
             current = initQueryCursor.getString(initQueryCursor.getColumnIndex("is_current"));
@@ -94,6 +96,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public long getItemId(int position) {
+
         return position;
     }
 
