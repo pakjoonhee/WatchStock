@@ -116,8 +116,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                 lineGraph.putExtra("symbol", symbol);
                 startActivity(lineGraph);
-                //TODO:
-                // do something on item click
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
