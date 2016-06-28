@@ -34,6 +34,8 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     String current;
     Cursor initQueryCursor;
     String id;
+    RemoteViews view;
+    private StringBuilder mStoredSymbols = new StringBuilder();
 
     static final int INDEX_ID = 0;
     static final int INDEX_SYMBOL = 1;
@@ -49,14 +51,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                 new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
                 null, null);
-
-        if(initQueryCursor != null && initQueryCursor.moveToFirst() ){
-            id = initQueryCursor.getString(initQueryCursor.getColumnIndex("_id"));
-            symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
-            price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
-            current = initQueryCursor.getString(initQueryCursor.getColumnIndex("is_current"));
-            initQueryCursor.close();
-        }
 
     }
 
@@ -77,10 +71,17 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews view = new RemoteViews(mContext.getPackageName(),
-                R.layout.widget_layout);
-        view.setTextViewText(R.id.symbol, symbol);
-        view.setTextViewText(R.id.price, price);
+        if (initQueryCursor.moveToPosition(position)) {
+            id = initQueryCursor.getString(initQueryCursor.getColumnIndex("_id"));
+            symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
+            price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
+            current = initQueryCursor.getString(initQueryCursor.getColumnIndex("is_current"));
+            view = new RemoteViews(mContext.getPackageName(),
+                    R.layout.widget_layout);
+            view.setTextViewText(R.id.symbol, symbol);
+            view.setTextViewText(R.id.price, price);
+        }
+
         return view;
     }
 
@@ -105,11 +106,5 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         return true;
     }
 
-    private void initData() {
-        mCollection.clear();
-        for (int i = 1; i <= 10; i++) {
-            mCollection.add("ListView item " + i);
-        }
-    }
 
 }
