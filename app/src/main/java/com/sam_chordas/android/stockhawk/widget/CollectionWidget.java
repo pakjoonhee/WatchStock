@@ -28,6 +28,10 @@ public class CollectionWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openApp, 0);
             views.setOnClickPendingIntent(R.id.widget_header, pendingIntent);
 
+            Intent openDetailApp = new Intent(context, LineGraphActivity.class);
+            PendingIntent secondPendingIntent = PendingIntent.getActivity(context, 0, openDetailApp, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, secondPendingIntent);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 setRemoteAdapter(context, views);
             } else {
