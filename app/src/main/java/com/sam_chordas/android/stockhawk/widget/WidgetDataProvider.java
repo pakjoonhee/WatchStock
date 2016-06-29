@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -71,7 +72,10 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
             view.setTextViewText(R.id.symbol, symbol);
             view.setTextViewText(R.id.price, price);
         }
-
+        Intent i = new Intent();
+        Bundle extras = new Bundle();
+        extras.putString("symbol", symbol);
+        view.setOnClickFillInIntent(R.id.master_widget, i);
         return view;
     }
 
