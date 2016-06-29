@@ -19,12 +19,7 @@ import java.util.List;
  * Created by joonheepak on 6/23/16.
  */
 public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
-    private static final String[] FORECAST_COLUMNS = {
-            QuoteColumns._ID,
-            QuoteColumns.SYMBOL,
-            QuoteColumns.BIDPRICE,
-            QuoteColumns.ISCURRENT
-    };
+
     private static final String TAG = "WidgetDataProvider";
 
     List<String> mCollection = new ArrayList<>();
@@ -36,11 +31,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     String id;
     RemoteViews view;
     private StringBuilder mStoredSymbols = new StringBuilder();
-
-    static final int INDEX_ID = 0;
-    static final int INDEX_SYMBOL = 1;
-    static final int INDEX_BIDPRICE = 2;
-    static final int INDEX_ISCURRENT = 3;
 
     public WidgetDataProvider(Context context, Intent intent) {
         mContext = context;

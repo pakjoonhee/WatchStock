@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.widget;
 
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.ui.LineGraphActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -19,8 +21,9 @@ public class CollectionWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.collection_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-
+        Intent openApp = new Intent(context, LineGraphActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openApp, 0);
+        views.setOnClickPendingIntent(R.id.widget_list, pendingIntent);
         // Set up the collection
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             setRemoteAdapter(context, views);
