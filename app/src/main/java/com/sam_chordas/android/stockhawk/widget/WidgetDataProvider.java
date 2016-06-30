@@ -74,8 +74,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         }
         Intent newIntent = new Intent();
         newIntent.putExtra("symbol", symbol);
-        // In setOnClickFillIntent method, the ID to be passed is of the Rootview
-        // of the layout passed in the remote view - above, i.e. rootview of the list_item_quote.
         view.setOnClickFillInIntent(R.id.rootview, newIntent);
         return view;
     }
