@@ -42,7 +42,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -51,13 +55,14 @@ import java.util.concurrent.ExecutionException;
  * and is used for the initialization and adding task as well.
  */
 public class LineGraphActivity extends Activity {
+    String yesterdayDateandTime = getYesterdayDateString();
+    String threeMonthsDateandTime = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
     private String END_URL = "%20and%20startDate%20%3D%20\"2016-01-01\"%20and%20endDate%20%3D%20\"2016-06-18\"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
     private ArrayList<String> stockHistory = new ArrayList<>();
     private ArrayList<String> dateStock = new ArrayList<>();
     private ArrayList<String> retrievedStockHistory = new ArrayList<>();
-    private final String[] mLabels = {"o", "p", "q", "r"};
-    private final float[] mValues = {12f, 80f, 60f, 80f};
+    private final String[] mLabels = {"", "", "", "", "", "", "", "", ""};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,9 @@ public class LineGraphActivity extends Activity {
         setContentView(R.layout.activity_line_graph);
         Bundle bundle = getIntent().getExtras();
         String symbol = bundle.getString("symbol");
+
+
+
 
 
 
@@ -123,12 +131,28 @@ public class LineGraphActivity extends Activity {
                 .setYAxis(false)
                 .setBorderSpacing(Tools.fromDpToPx(10));
 
+
         Animation anim = new Animation();
         lineChartView.addData(dataset);
         lineChartView.show();
 
 
     }
+
+    private String getYesterdayDateString() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return dateFormat.format(cal.getTime());
+    }
+
+    private String getThreeMonthsDateString() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -90);
+        return dateFormat.format(cal.getTime());
+    }
+
     public class AsyncHttpTask extends AsyncTask<String, Void, ArrayList<String>> {
         HttpURLConnection connection = null;
 
