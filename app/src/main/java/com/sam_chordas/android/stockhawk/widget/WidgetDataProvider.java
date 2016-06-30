@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Binder;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -22,28 +23,33 @@ import java.util.List;
 public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
 
     Context mContext = null;
+    Intent mIntent = null;
     String symbol;
     String price;
     String current;
     Cursor initQueryCursor;
     String id;
     RemoteViews view;
-    private StringBuilder mStoredSymbols = new StringBuilder();
 
     public WidgetDataProvider(Context context, Intent intent) {
         mContext = context;
+        mIntent = intent;
     }
 
     @Override
     public void onCreate() {
-        initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
-                null, null);
+        initData();
 
     }
 
     @Override
     public void onDataSetChanged() {
+        final long token = Binder.clearCallingIdentity();
+        try {
+            initData();
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
 
     }
 
@@ -94,6 +100,12 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    public void initData() {
+        initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
+                null, null);
     }
 
 

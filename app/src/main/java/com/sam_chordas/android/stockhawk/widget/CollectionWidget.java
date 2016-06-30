@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.widget.ListView;
 import android.widget.RemoteViews;
@@ -24,6 +25,19 @@ public class CollectionWidget extends AppWidgetProvider {
 
     public static final String WIDGET_IDS_KEY ="mywidgetproviderwidgetids";
     public static final String WIDGET_DATA_KEY ="mywidgetproviderwidgetdata";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.hasExtra(WIDGET_IDS_KEY)) {
+            int[] ids = intent.getExtras().getIntArray(WIDGET_IDS_KEY);
+            if (intent.hasExtra(WIDGET_DATA_KEY)) {
+                Object data = intent.getExtras().getParcelable(WIDGET_DATA_KEY);
+                this.update(context, AppWidgetManager.getInstance(context), ids, data);
+            } else {
+                this.onUpdate(context, AppWidgetManager.getInstance(context), ids);
+            }
+        } else super.onReceive(context, intent);
+    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -43,34 +57,12 @@ public class CollectionWidget extends AppWidgetProvider {
                 setRemoteAdapterV11(context, views);
             }
             // Instruct the widget manager to update the widget
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,R.id.widget_list);
             appWidgetManager.updateAppWidget(appWidgetIds[i], views);
         }
+
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.hasExtra(WIDGET_IDS_KEY)) {
-            int[] ids = intent.getExtras().getIntArray(WIDGET_IDS_KEY);
-            if (intent.hasExtra(WIDGET_DATA_KEY)) {
-                Object data = intent.getExtras().getParcelable(WIDGET_DATA_KEY);
-                this.update(context, AppWidgetManager.getInstance(context), ids, data);
-            } else {
-                this.onUpdate(context, AppWidgetManager.getInstance(context), ids);
-            }
-        } else super.onReceive(context, intent);
     }
 
     public void update(Context context, AppWidgetManager manager, int[] appWidgetIds, Object data) {
@@ -87,8 +79,19 @@ public class CollectionWidget extends AppWidgetProvider {
                     context, 0, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             views.setOnClickPendingIntent(R.id.widget_list, pendingIntent);
+
             manager.updateAppWidget(appWidgetIds, views);
         }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        // Enter relevant functionality for when the first widget is created
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        // Enter relevant functionality for when the last widget is disabled
     }
 
 

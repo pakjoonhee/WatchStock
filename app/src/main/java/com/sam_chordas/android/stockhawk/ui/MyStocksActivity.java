@@ -1,6 +1,8 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -40,6 +42,7 @@ import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
+import com.sam_chordas.android.stockhawk.widget.CollectionWidget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -332,6 +335,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
+    ComponentName name = new ComponentName(this, CollectionWidget.class);
+    int [] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
+
+    Intent intent = new Intent(this,CollectionWidget.class);
+    intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+    sendBroadcast(intent);
   }
 
   @Override
