@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/chart_legend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Average Price:"
+        android:textSize="20sp"
+        android:textColor="#9fb7cc"
+        android:gravity="center"
+        android:layout_marginLeft="35dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/chart_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="120.04"
+        android:textSize="30sp"
+        android:includeFontPadding="false"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/chart_legend"
+        android:layout_marginLeft="35dp"
+        android:layout_marginStart="35dp"/>
 
     <com.db.chart.view.LineChartView
         xmlns:chart="http://schemas.android.com/apk/res-auto"
@@ -9,4 +34,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</FrameLayout>
+</RelativeLayout>

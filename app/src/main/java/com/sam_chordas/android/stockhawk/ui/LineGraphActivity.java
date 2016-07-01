@@ -1,34 +1,17 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.db.chart.Tools;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.AxisController;
-import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
 import com.db.chart.view.animation.Animation;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.GcmTaskService;
-import com.google.android.gms.gcm.TaskParams;
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.data.QuoteColumns;
-import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.rest.Utils;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,15 +21,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -55,10 +35,10 @@ import java.util.concurrent.ExecutionException;
  * and is used for the initialization and adding task as well.
  */
 public class LineGraphActivity extends Activity {
-    String yesterdayDateandTime = getYesterdayDateString();
-    String threeMonthsDateandTime = getThreeMonthsDateString();
+    String yesterdayDate = getYesterdayDateString();
+    String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
-    private String END_URL = "%20and%20startDate%20%3D%20\"2016-01-01\"%20and%20endDate%20%3D%20\"2016-06-18\"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+    private String END_URL = "%20and%20startDate%20%3D%20\"" + threeMonthsDate + "\"%20and%20endDate%20%3D%20\"" + yesterdayDate + "\"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
     private ArrayList<String> stockHistory = new ArrayList<>();
     private ArrayList<String> dateStock = new ArrayList<>();
     private ArrayList<String> retrievedStockHistory = new ArrayList<>();
@@ -72,17 +52,6 @@ public class LineGraphActivity extends Activity {
         String symbol = bundle.getString("symbol");
 
 
-
-
-
-
-        //StringBuilder urlStringBuilder = new StringBuilder();
-        //try {
-            //urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=");
-            //urlStringBuilder.append(URLEncoder.encode("select * from yahoo.finance.historicaldata where symbol " + "= ", "UTF-8"));
-        // } catch (UnsupportedEncodingException e) {
-           // e.printStackTrace();
-        //}
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
 
         try {
@@ -100,17 +69,18 @@ public class LineGraphActivity extends Activity {
             retrievedStockHistory.remove(i);
 
         }
+
         float [] floatValues = new float[retrievedStockHistory.size()];
 
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
         }
 
-        int listSize = retrievedStockHistory.size();
+        //int listSize = retrievedStockHistory.size();
 
-        for (int i = 0; i<listSize; i++){
-            Log.i("the date: ", retrievedStockHistory.get(i));
-        }
+        //for (int i = 0; i<listSize; i++){
+         //   Log.i("the date: ", retrievedStockHistory.get(i));
+        //}
 
         String[] dateArr = new String[dateStock.size()];
         dateArr = dateStock.toArray(dateArr);
@@ -120,16 +90,21 @@ public class LineGraphActivity extends Activity {
 
         LineSet dataset = new LineSet(dateArr, floatValues);
         dataset.setColor(Color.parseColor("#53c1bd"))
+                .setSmooth(true)
+                .setDotsDrawable(getDrawable(5))
                 .setFill(Color.parseColor("#3d6c73"))
                 .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
         lineChartView.addData(dataset);
 
         lineChartView.setBorderSpacing(10)
+                .setStep(50)
                 .setXLabels(AxisController.LabelPosition.NONE)
-                .setYLabels(AxisController.LabelPosition.NONE)
+                .setYLabels(AxisController.LabelPosition.OUTSIDE)
                 .setXAxis(false)
-                .setYAxis(false)
-                .setBorderSpacing(Tools.fromDpToPx(10));
+                .setYAxis(true)
+                .setLabelsColor(-1)
+                .setFontSize(40)
+                .setBorderSpacing(Tools.fromDpToPx(0));
 
 
         Animation anim = new Animation();
