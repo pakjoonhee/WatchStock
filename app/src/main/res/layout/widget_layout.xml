@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/rootview">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:id="@+id/rootview"
+    android:paddingTop="10dp">
 
     <TextView
         android:id="@+id/symbol"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="17sp"
+        android:gravity="center"/>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/symbol"
-        android:id="@+id/price"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:textSize="17sp"
         android:text="+100.89"
-        android:layout_toRightOf="@+id/price"
-        android:id="@+id/change"/>
+        android:id="@+id/change"
+        android:layout_weight="1"
+        android:gravity="center"/>
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:id="@+id/price"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+</LinearLayout>
