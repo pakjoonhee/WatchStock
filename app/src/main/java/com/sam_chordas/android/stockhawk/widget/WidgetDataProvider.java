@@ -27,6 +27,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     String symbol;
     String price;
     String current;
+    String change;
     Cursor initQueryCursor;
     String id;
     RemoteViews view;
@@ -68,12 +69,14 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         if (initQueryCursor.moveToPosition(position)) {
             id = initQueryCursor.getString(initQueryCursor.getColumnIndex("_id"));
             symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
+            change = initQueryCursor.getString(initQueryCursor.getColumnIndex("change"));
             price = initQueryCursor.getString(initQueryCursor.getColumnIndex("bid_price"));
             current = initQueryCursor.getString(initQueryCursor.getColumnIndex("is_current"));
             view = new RemoteViews(mContext.getPackageName(),
                     R.layout.widget_layout);
             view.setTextViewText(R.id.symbol, symbol);
             view.setTextViewText(R.id.price, price);
+            view.setTextViewText(R.id.change, change);
         }
         Intent newIntent = new Intent();
         newIntent.putExtra("symbol", symbol);
@@ -104,7 +107,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     public void initData() {
         initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT}, "is_current='1' ",
+                new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.ISCURRENT, QuoteColumns.CHANGE}, "is_current='1' ",
                 null, null);
     }
 
