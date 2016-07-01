@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.LayoutDirection;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
+
+import static android.text.TextUtils.getLayoutDirectionFromLocale;
 
 /**
  * Created by sam_chordas on 9/30/15.

@@ -11,8 +11,7 @@
         android:textSize="20sp"
         android:textColor="#9fb7cc"
         android:gravity="center"
-        android:layout_marginLeft="35dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="35dp"
         android:layout_marginTop="5dp"/>
 
     <TextView
@@ -25,7 +24,6 @@
         android:includeFontPadding="false"
         android:textColor="#ffffff"
         android:layout_below="@+id/chart_legend"
-        android:layout_marginLeft="35dp"
         android:layout_marginStart="35dp"/>
 
     <com.db.chart.view.LineChartView

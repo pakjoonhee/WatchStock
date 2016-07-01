@@ -1,18 +1,21 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -44,7 +48,6 @@ import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 import com.sam_chordas.android.stockhawk.widget.CollectionWidget;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,6 +58,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -82,6 +86,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   String testing;
   MaterialDialog d;
   String userInput;
+
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  private void forceRTLIfSupported()
+  {
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+      getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+    }
+  }
+  public static int getLayoutDirectionFromLocale(@Nullable Locale locale) {
+    return TextUtils.getLayoutDirectionFromLocale(locale);
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -307,8 +322,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     int id = item.getItemId();
 
     //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
+    if (id == R.id.right_to_left) {
+      forceRTLIfSupported();
     }
 
     if (id == R.id.action_change_units){

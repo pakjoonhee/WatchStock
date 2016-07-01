@@ -22,7 +22,7 @@
         android:text="+100.89"
         android:id="@+id/change"
         android:layout_weight="1"
-        android:gravity="left"
+        android:gravity="start"
         android:textStyle="bold"/>
 
     <TextView
