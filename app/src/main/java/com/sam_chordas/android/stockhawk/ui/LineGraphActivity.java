@@ -2,11 +2,14 @@ package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.db.chart.Tools;
+import com.db.chart.listener.OnEntryClickListener;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.AxisController;
 import com.db.chart.view.LineChartView;
@@ -42,7 +45,6 @@ public class LineGraphActivity extends Activity {
     private ArrayList<String> stockHistory = new ArrayList<>();
     private ArrayList<String> dateStock = new ArrayList<>();
     private ArrayList<String> retrievedStockHistory = new ArrayList<>();
-    private final String[] mLabels = {"", "", "", "", "", "", "", "", ""};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,19 +64,24 @@ public class LineGraphActivity extends Activity {
             e.printStackTrace();
         }
 
-
-
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             dateStock.add(retrievedStockHistory.get(i));
             retrievedStockHistory.remove(i);
-
         }
-
         float [] floatValues = new float[retrievedStockHistory.size()];
-
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
         }
+
+        float sum = 0;
+        for(int i = 0; i < floatValues.length; i++) {
+            sum += floatValues[i];
+        }
+        float average = sum / floatValues.length;
+        String averageRounded = String.format("%.2f", average);
+        TextView averagePrice = (TextView)findViewById(R.id.chart_price);
+        averagePrice.setText(String.valueOf(averageRounded));
+
 
         //int listSize = retrievedStockHistory.size();
 
@@ -91,7 +98,6 @@ public class LineGraphActivity extends Activity {
         LineSet dataset = new LineSet(dateArr, floatValues);
         dataset.setColor(Color.parseColor("#53c1bd"))
                 .setSmooth(true)
-                .setDotsDrawable(getDrawable(5))
                 .setFill(Color.parseColor("#3d6c73"))
                 .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
         lineChartView.addData(dataset);
