@@ -94,9 +94,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
     }
   }
-  public static int getLayoutDirectionFromLocale(@Nullable Locale locale) {
-    return TextUtils.getLayoutDirectionFromLocale(locale);
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  private void forceLTRIfSupported()
+  {
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+      getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+    }
   }
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -323,7 +328,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.right_to_left) {
-      forceRTLIfSupported();
+        forceRTLIfSupported();
+    }
+    if (id == R.id.left_to_right) {
+      forceLTRIfSupported();
     }
 
     if (id == R.id.action_change_units){

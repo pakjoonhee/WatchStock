@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 
@@ -25,6 +26,7 @@ public class CollectionWidget extends AppWidgetProvider {
 
     public static final String WIDGET_IDS_KEY ="mywidgetproviderwidgetids";
     public static final String WIDGET_DATA_KEY ="mywidgetproviderwidgetdata";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
