@@ -24,11 +24,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -100,6 +103,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
       getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
     }
+  }
+  public void onCreateInputConnection(EditorInfo outAttrs) {
+
+    outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+
+    // etc.
   }
 
 
@@ -202,12 +211,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                   })
                   .show();
 
+
         } else {
           networkToast();
         }
       }
     });
-
     ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
     mItemTouchHelper = new ItemTouchHelper(callback);
     mItemTouchHelper.attachToRecyclerView(recyclerView);
