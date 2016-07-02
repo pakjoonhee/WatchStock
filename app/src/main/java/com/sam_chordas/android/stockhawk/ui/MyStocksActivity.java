@@ -174,7 +174,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                       }
                       if (c.getCount() != 0) {
                         Toast toast =
-                                Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                                Toast.makeText(MyStocksActivity.this, R.string.stock_saved,
                                         Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                         toast.show();
@@ -187,7 +187,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         startService(mServiceIntent);
                       } else if (linkReallyWorks == false) {
                         Toast toast =
-                                Toast.makeText(MyStocksActivity.this, "This stock doesn't exist!",
+                                Toast.makeText(MyStocksActivity.this, R.string.stock_nonexistent,
                                         Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                         toast.show();

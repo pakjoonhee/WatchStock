@@ -13,7 +13,19 @@
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="widget_header">Stock Hawk</string>
+    <string name="cursor_invalid">This should only be called when Cursor is valid</string>
+    <string name="cursor_position_error">Could not move Cursor to position:</string>
+
+    <string name="providerwidgetids" translatable="false">mywidgetproviderwidgetids</string>
+    <string name="providerwidgetdata" translatable="false">mywidgetproviderwidgetdata</string>
+    <string name="stock_saved">This stock is already saved!</string>
+    <string name="stock_nonexistent">This stock doesn\'t exist!</string>
+    <string name="base_url">http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20</string>
+
+    <string name="average_price">Average Price:</string>
     <string name="line_graph">Line Graph of Stock. Average price of stock on upper right.</string>
     <string name="floating_button">A button to press for adding stocks.</string>
+
 
 </resources>

@@ -24,8 +24,8 @@ import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
  */
 public class CollectionWidget extends AppWidgetProvider {
 
-    public static final String WIDGET_IDS_KEY ="mywidgetproviderwidgetids";
-    public static final String WIDGET_DATA_KEY ="mywidgetproviderwidgetdata";
+    public static final String WIDGET_IDS_KEY = String.valueOf(R.string.providerwidgetids);
+    public static final String WIDGET_DATA_KEY = String.valueOf(R.string.providerwidgetdata);
 
 
     @Override

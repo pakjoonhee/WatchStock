@@ -27,7 +27,7 @@
                 android:id="@+id/widget_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stock Hawk"
+                android:text="@string/widget_header"
                 android:layout_gravity="center_vertical"
                 android:textColor="@android:color/black"
                 android:textAppearance="?android:attr/textAppearanceMedium"
