@@ -8,14 +8,12 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -23,15 +21,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -61,7 +56,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -175,7 +169,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                       testing = "https://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+in+%28" + "\"" + userInput + "\"" +
                               "%29&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
                       try {
-                        linkReallyWorks = new AsyncVideoTask().execute(testing).get();
+                        linkReallyWorks = new AsyncTestTask().execute(testing).get();
                       } catch (InterruptedException e) {
                         e.printStackTrace();
                       } catch (ExecutionException e) {
@@ -243,7 +237,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
   }
 
-  public class AsyncVideoTask extends AsyncTask<String, Void, Boolean> {
+  public class AsyncTestTask extends AsyncTask<String, Void, Boolean> {
     HttpURLConnection connection = null;
 
     @Override
