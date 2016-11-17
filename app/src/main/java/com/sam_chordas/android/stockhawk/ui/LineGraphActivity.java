@@ -9,12 +9,7 @@ import android.util.LayoutDirection;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.db.chart.Tools;
-import com.db.chart.listener.OnEntryClickListener;
-import com.db.chart.model.LineSet;
-import com.db.chart.view.AxisController;
-import com.db.chart.view.LineChartView;
-import com.db.chart.view.animation.Animation;
+
 import com.sam_chordas.android.stockhawk.R;
 
 import org.json.JSONArray;
@@ -76,49 +71,42 @@ public class LineGraphActivity extends Activity {
             floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
         }
 
-        float sum = 0;
-        for(int i = 0; i < floatValues.length; i++) {
-            sum += floatValues[i];
-        }
-        float average = sum / floatValues.length;
-        String averageRounded = String.format("%.2f", average);
-        TextView averagePrice = (TextView)findViewById(R.id.chart_price);
-        averagePrice.setText(String.valueOf(averageRounded));
-
-
-        //int listSize = retrievedStockHistory.size();
-
-        //for (int i = 0; i<listSize; i++){
-         //   Log.i("the date: ", retrievedStockHistory.get(i));
-        //}
-
-        String[] dateArr = new String[dateStock.size()];
-        dateArr = dateStock.toArray(dateArr);
-
-
-        LineChartView lineChartView = (LineChartView) findViewById(R.id.linechart);
-
-        LineSet dataset = new LineSet(dateArr, floatValues);
-        dataset.setColor(Color.parseColor("#53c1bd"))
-                .setSmooth(true)
-                .setFill(Color.parseColor("#3d6c73"))
-                .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
-        lineChartView.addData(dataset);
-
-        lineChartView.setBorderSpacing(10)
-                .setStep(50)
-                .setXLabels(AxisController.LabelPosition.NONE)
-                .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                .setXAxis(false)
-                .setYAxis(true)
-                .setLabelsColor(-1)
-                .setFontSize(40)
-                .setBorderSpacing(Tools.fromDpToPx(0));
-
-
-        Animation anim = new Animation();
-        lineChartView.addData(dataset);
-        lineChartView.show();
+//        float sum = 0;
+//        for(int i = 0; i < floatValues.length; i++) {
+//            sum += floatValues[i];
+//        }
+//        float average = sum / floatValues.length;
+//        String averageRounded = String.format("%.2f", average);
+//        TextView averagePrice = (TextView)findViewById(R.id.chart_price);
+//        averagePrice.setText(String.valueOf(averageRounded));
+//
+//        String[] dateArr = new String[dateStock.size()];
+//        dateArr = dateStock.toArray(dateArr);
+//
+//
+//        LineChartView lineChartView = (LineChartView) findViewById(R.id.linechart);
+//
+//        LineSet dataset = new LineSet(dateArr, floatValues);
+//        dataset.setColor(Color.parseColor("#53c1bd"))
+//                .setSmooth(true)
+//                .setFill(Color.parseColor("#3d6c73"))
+//                .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
+//        lineChartView.addData(dataset);
+//
+//        lineChartView.setBorderSpacing(10)
+//                .setStep(50)
+//                .setXLabels(AxisController.LabelPosition.NONE)
+//                .setYLabels(AxisController.LabelPosition.OUTSIDE)
+//                .setXAxis(false)
+//                .setYAxis(true)
+//                .setLabelsColor(-1)
+//                .setFontSize(40)
+//                .setBorderSpacing(Tools.fromDpToPx(0));
+//
+//
+//        Animation anim = new Animation();
+//        lineChartView.addData(dataset);
+//        lineChartView.show();
 
 
     }
