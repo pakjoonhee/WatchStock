@@ -55,6 +55,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
     private LineChart mpAndroidChart;
     private TextView stockPrice;
     private TextView stockDate;
+    private TextView currentPrice;
     private String [] dateValues;
 
     @Override
@@ -68,6 +69,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
         stockPrice = (TextView) findViewById(R.id.stock_price);
         stockDate = (TextView) findViewById(R.id.stock_date);
+        currentPrice = (TextView) findViewById(R.id.current_price);
 
         try {
             retrievedStockHistory = new AsyncHttpTask().execute(historyUrl).get();
@@ -162,6 +164,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
     public void onValueSelected(Entry e, Highlight h) {
         stockPrice.setText("" + e.getY());
         stockDate.setText(dateStock.get((int)e.getX()));
+        currentPrice.setText(retrievedStockHistory.get(0));
     }
 
     @Override
