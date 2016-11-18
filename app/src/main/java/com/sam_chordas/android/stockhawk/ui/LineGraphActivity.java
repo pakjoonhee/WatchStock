@@ -72,7 +72,6 @@ public class LineGraphActivity extends Activity {
             e.printStackTrace();
         }
 
-
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             dateStock.add(retrievedStockHistory.get(i));
             retrievedStockHistory.remove(i);
@@ -81,6 +80,8 @@ public class LineGraphActivity extends Activity {
         float [] floatValues = new float[retrievedStockHistory.size()];
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
+            Entry blah = new Entry((float)i, floatValues[i]);
+            valsComp1.add(blah);
         }
 
         final String [] dateValues = new String[dateStock.size()];
@@ -88,10 +89,6 @@ public class LineGraphActivity extends Activity {
             dateValues[i] = (dateStock.get(i));
         }
 
-        for (int i = 0; i < floatValues.length; i++) {
-            Entry blah = new Entry((float)i, floatValues[i]);
-            valsComp1.add(blah);
-        }
         Log.d("blah", String.valueOf(valsComp1.get(0)) + " " + floatValues.length + " " + valsComp1.size());
 
 
@@ -109,14 +106,35 @@ public class LineGraphActivity extends Activity {
         XAxis xAxis = mpAndroidChart.getXAxis();
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(formatter);
+        xAxis.setDrawLabels(false);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+
+        YAxis yAxis = mpAndroidChart.getAxisLeft();
+        yAxis.setDrawLabels(false);
+        yAxis.setDrawAxisLine(false);
+        yAxis.setDrawGridLines(false);
+        yAxis.setDrawZeroLine(true);
+        mpAndroidChart.getAxisRight().setEnabled(false);
 
         LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
-        setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        setComp1.setDrawCircles(false);
+
+        setComp1.setLineWidth(3f);
+        setComp1.setHighLightColor(Color.RED);
+        setComp1.setColor(Color.RED);
+        setComp1.setDrawHorizontalHighlightIndicator(true);
+
+
+
+        setComp1.setAxisDependency(YAxis.AxisDependency.RIGHT);
+
 
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         dataSets.add(setComp1);
 
         LineData data = new LineData(dataSets);
+        data.setDrawValues(false);
         mpAndroidChart.setData(data);
         mpAndroidChart.invalidate();
 
