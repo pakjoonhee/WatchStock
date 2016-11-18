@@ -5,37 +5,17 @@
     android:layoutDirection="rtl"
     android:contentDescription="@string/line_graph">
 
-    <TextView
-        android:id="@+id/chart_legend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/average_price"
-        android:textSize="20sp"
-        android:textColor="#9fb7cc"
-        android:gravity="center"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="5dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/specific_price"/>
 
-    <TextView
-        android:id="@+id/chart_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:includeFontPadding="false"
-        android:textColor="#ffffff"
-        android:layout_below="@+id/chart_legend"
-        android:layout_marginStart="35dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/upOrDown"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/mpandroidchart"
+        android:layout_width="match_parent"
+        android:background="@color/md_divider_white"
+        android:layout_height="match_parent" />
 
 
 </RelativeLayout>

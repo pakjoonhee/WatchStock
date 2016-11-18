@@ -10,6 +10,15 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 
 import org.json.JSONArray;
@@ -26,6 +35,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static android.text.TextUtils.getLayoutDirectionFromLocale;
@@ -50,8 +60,8 @@ public class LineGraphActivity extends Activity {
         setContentView(R.layout.activity_line_graph);
         Bundle bundle = getIntent().getExtras();
         String symbol = bundle.getString("symbol");
-
-
+        LineChart mpAndroidChart = (LineChart) findViewById(R.id.mpandroidchart);
+        List<Entry> valsComp1 = new ArrayList<Entry>();
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
 
         try {
@@ -62,51 +72,53 @@ public class LineGraphActivity extends Activity {
             e.printStackTrace();
         }
 
+
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             dateStock.add(retrievedStockHistory.get(i));
             retrievedStockHistory.remove(i);
         }
+
         float [] floatValues = new float[retrievedStockHistory.size()];
         for (int i = 0; i < retrievedStockHistory.size(); i++) {
             floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
         }
 
-//        float sum = 0;
-//        for(int i = 0; i < floatValues.length; i++) {
-//            sum += floatValues[i];
-//        }
-//        float average = sum / floatValues.length;
-//        String averageRounded = String.format("%.2f", average);
-//        TextView averagePrice = (TextView)findViewById(R.id.chart_price);
-//        averagePrice.setText(String.valueOf(averageRounded));
-//
-//        String[] dateArr = new String[dateStock.size()];
-//        dateArr = dateStock.toArray(dateArr);
-//
-//
-//        LineChartView lineChartView = (LineChartView) findViewById(R.id.linechart);
-//
-//        LineSet dataset = new LineSet(dateArr, floatValues);
-//        dataset.setColor(Color.parseColor("#53c1bd"))
-//                .setSmooth(true)
-//                .setFill(Color.parseColor("#3d6c73"))
-//                .setGradientFill(new int[]{Color.parseColor("#364d5a"), Color.parseColor("#3f7178")}, null);
-//        lineChartView.addData(dataset);
-//
-//        lineChartView.setBorderSpacing(10)
-//                .setStep(50)
-//                .setXLabels(AxisController.LabelPosition.NONE)
-//                .setYLabels(AxisController.LabelPosition.OUTSIDE)
-//                .setXAxis(false)
-//                .setYAxis(true)
-//                .setLabelsColor(-1)
-//                .setFontSize(40)
-//                .setBorderSpacing(Tools.fromDpToPx(0));
-//
-//
-//        Animation anim = new Animation();
-//        lineChartView.addData(dataset);
-//        lineChartView.show();
+        final String [] dateValues = new String[dateStock.size()];
+        for (int i = 0; i < dateStock.size(); i++) {
+            dateValues[i] = (dateStock.get(i));
+        }
+
+        for (int i = 0; i < floatValues.length; i++) {
+            Entry blah = new Entry((float)i, floatValues[i]);
+            valsComp1.add(blah);
+        }
+        Log.d("blah", String.valueOf(valsComp1.get(0)) + " " + floatValues.length + " " + valsComp1.size());
+
+
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return dateValues[(int) value];
+            }
+
+            @Override
+            public int getDecimalDigits() {  return 0; }
+        };
+
+        XAxis xAxis = mpAndroidChart.getXAxis();
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(formatter);
+
+        LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
+        setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(setComp1);
+
+        LineData data = new LineData(dataSets);
+        mpAndroidChart.setData(data);
+        mpAndroidChart.invalidate();
 
 
     }
