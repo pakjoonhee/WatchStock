@@ -2,10 +2,8 @@ package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.LayoutDirection;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -18,8 +16,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.utility.MyMarkerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,14 +39,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static android.text.TextUtils.getLayoutDirectionFromLocale;
-
 /**
  * Created by sam_chordas on 9/30/15.
  * The GCMTask service is primarily for periodic tasks. However, OnRunTask can be called directly
  * and is used for the initialization and adding task as well.
  */
-public class LineGraphActivity extends Activity {
+public class LineGraphActivity extends Activity implements OnChartValueSelectedListener {
     String yesterdayDate = getYesterdayDateString();
     String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
@@ -53,6 +52,10 @@ public class LineGraphActivity extends Activity {
     private ArrayList<String> stockHistory = new ArrayList<>();
     private ArrayList<String> dateStock = new ArrayList<>();
     private ArrayList<String> retrievedStockHistory = new ArrayList<>();
+    private LineChart mpAndroidChart;
+    private TextView stockPrice;
+    private TextView stockDate;
+    private String [] dateValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +63,11 @@ public class LineGraphActivity extends Activity {
         setContentView(R.layout.activity_line_graph);
         Bundle bundle = getIntent().getExtras();
         String symbol = bundle.getString("symbol");
-        LineChart mpAndroidChart = (LineChart) findViewById(R.id.mpandroidchart);
+        mpAndroidChart = (LineChart) findViewById(R.id.mpandroidchart);
         List<Entry> valsComp1 = new ArrayList<Entry>();
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
+        stockPrice = (TextView) findViewById(R.id.stock_price);
+        stockDate = (TextView) findViewById(R.id.stock_date);
 
         try {
             retrievedStockHistory = new AsyncHttpTask().execute(historyUrl).get();
@@ -84,7 +89,7 @@ public class LineGraphActivity extends Activity {
             valsComp1.add(blah);
         }
 
-        final String [] dateValues = new String[dateStock.size()];
+        dateValues = new String[dateStock.size()];
         for (int i = 0; i < dateStock.size(); i++) {
             dateValues[i] = (dateStock.get(i));
         }
@@ -125,10 +130,10 @@ public class LineGraphActivity extends Activity {
         setComp1.setColor(Color.RED);
         setComp1.setDrawHorizontalHighlightIndicator(true);
 
-
-
-        setComp1.setAxisDependency(YAxis.AxisDependency.RIGHT);
-
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        mv.setChartView(mpAndroidChart); // For bounds control
+        mpAndroidChart.setMarker(mv); // Set the marker to the chart
+        mpAndroidChart.setOnChartValueSelectedListener(this);
 
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         dataSets.add(setComp1);
@@ -137,8 +142,6 @@ public class LineGraphActivity extends Activity {
         data.setDrawValues(false);
         mpAndroidChart.setData(data);
         mpAndroidChart.invalidate();
-
-
     }
 
     private String getYesterdayDateString() {
@@ -153,6 +156,17 @@ public class LineGraphActivity extends Activity {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -90);
         return dateFormat.format(cal.getTime());
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        stockPrice.setText("" + e.getY());
+        stockDate.setText(dateStock.get((int)e.getX()));
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 
     public class AsyncHttpTask extends AsyncTask<String, Void, ArrayList<String>> {
@@ -213,6 +227,7 @@ public class LineGraphActivity extends Activity {
             }
             return result;
         }
+
 
     }
 }
