@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.TextView;
 
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -44,7 +46,7 @@ import java.util.concurrent.ExecutionException;
  * The GCMTask service is primarily for periodic tasks. However, OnRunTask can be called directly
  * and is used for the initialization and adding task as well.
  */
-public class LineGraphActivity extends Activity implements OnChartValueSelectedListener {
+public class LineGraphActivity extends FragmentActivity implements OnChartValueSelectedListener {
     String yesterdayDate = getYesterdayDateString();
     String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
@@ -57,6 +59,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
     private TextView stockDate;
     private TextView currentPrice;
     private String [] dateValues;
+    private String bidPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
         setContentView(R.layout.activity_line_graph);
         Bundle bundle = getIntent().getExtras();
         String symbol = bundle.getString("symbol");
+        bidPrice = bundle.getString("bid_price");
         mpAndroidChart = (LineChart) findViewById(R.id.mpandroidchart);
         List<Entry> valsComp1 = new ArrayList<Entry>();
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
@@ -96,7 +100,8 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
             dateValues[i] = (dateStock.get(i));
         }
 
-        Log.d("blah", String.valueOf(valsComp1.get(0)) + " " + floatValues.length + " " + valsComp1.size());
+
+        Log.d("crap", String.valueOf(Calendar.DATE));
 
 
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
@@ -126,30 +131,31 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
 
         LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
         setComp1.setDrawCircles(false);
-
-        setComp1.setLineWidth(3f);
+        setComp1.setLineWidth(2f);
         setComp1.setHighLightColor(Color.RED);
         setComp1.setColor(Color.RED);
         setComp1.setDrawHorizontalHighlightIndicator(true);
 
-        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
-        mv.setChartView(mpAndroidChart); // For bounds control
-        mpAndroidChart.setMarker(mv); // Set the marker to the chart
-        mpAndroidChart.setOnChartValueSelectedListener(this);
+//        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+//        mv.setChartView(mpAndroidChart);
+//        mpAndroidChart.setMarker(mv);
 
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         dataSets.add(setComp1);
 
         LineData data = new LineData(dataSets);
         data.setDrawValues(false);
+        mpAndroidChart.setDescription(null);
         mpAndroidChart.setData(data);
         mpAndroidChart.invalidate();
+        mpAndroidChart.setOnChartValueSelectedListener(this);
+        mpAndroidChart.getLegend().setEnabled(false);
     }
+
 
     private String getYesterdayDateString() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
         return dateFormat.format(cal.getTime());
     }
 
@@ -164,7 +170,7 @@ public class LineGraphActivity extends Activity implements OnChartValueSelectedL
     public void onValueSelected(Entry e, Highlight h) {
         stockPrice.setText("" + e.getY());
         stockDate.setText(dateStock.get((int)e.getX()));
-        currentPrice.setText(retrievedStockHistory.get(0));
+        currentPrice.setText(bidPrice);
     }
 
     @Override

@@ -140,7 +140,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               @Override public void onItemClick(View v, int position) {
                 mCursor.moveToPosition(position);   // move to correct row in database
                 String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+                String bidPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
                 lineGraph.putExtra("symbol", symbol);
+                lineGraph.putExtra("bid_price", bidPrice);
                 startActivity(lineGraph);
               }
             }));
