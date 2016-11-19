@@ -1,17 +1,18 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -22,7 +23,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.utility.MyMarkerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +60,8 @@ public class LineGraphActivity extends FragmentActivity implements OnChartValueS
     private TextView currentPrice;
     private String [] dateValues;
     private String bidPrice;
+    private Button button;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,17 @@ public class LineGraphActivity extends FragmentActivity implements OnChartValueS
         stockPrice = (TextView) findViewById(R.id.stock_price);
         stockDate = (TextView) findViewById(R.id.stock_date);
         currentPrice = (TextView) findViewById(R.id.current_price);
+
+
+        button = (Button) findViewById(R.id.blah);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LineGraphActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         try {
             retrievedStockHistory = new AsyncHttpTask().execute(historyUrl).get();
@@ -99,10 +112,6 @@ public class LineGraphActivity extends FragmentActivity implements OnChartValueS
         for (int i = 0; i < dateStock.size(); i++) {
             dateValues[i] = (dateStock.get(i));
         }
-
-
-        Log.d("crap", String.valueOf(Calendar.DATE));
-
 
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
 
