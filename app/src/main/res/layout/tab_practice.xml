@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layoutDirection="rtl"
+    android:background="#ffffff"
+    android:contentDescription="@string/line_graph">
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Tab 1"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textColor="@color/black"
+        android:id="@+id/stock_price"/>
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:id="@+id/stock_date"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:id="@+id/current_price"/>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/mpandroidchart"
+        android:layout_width="match_parent"
+        android:layout_below="@id/stock_price"
+        android:background="@color/md_divider_white"
+        android:elevation="5dp"
+        android:layout_height="400dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="blah"
+        android:id="@+id/blah"/>
+
+
+</LinearLayout>
