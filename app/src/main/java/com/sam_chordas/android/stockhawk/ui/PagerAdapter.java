@@ -18,8 +18,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
-        TabFragment1 tab1 = new TabFragment1();
+        GraphFragment tab1 = new GraphFragment();
         return tab1;
 
     }

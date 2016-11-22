@@ -142,7 +142,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
-                mCursor.moveToPosition(position);   // move to correct row in database
+                mCursor.moveToPosition(position);
                 String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                 String bidPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
                 lineGraph.putExtra("symbol", symbol);

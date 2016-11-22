@@ -27,6 +27,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.utility.CustomViewPager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,22 +61,24 @@ public class LineGraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_line_graph);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        Bundle bundle = getIntent().getExtras();
+        Integer tabIndex = bundle.getInt("tab_index");
 
         tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
         tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final CustomViewPager customViewPager = (CustomViewPager) findViewById(R.id.pager);
+        customViewPager.setPagingEnabled(false);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        customViewPager.setAdapter(adapter);
+        customViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                customViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override

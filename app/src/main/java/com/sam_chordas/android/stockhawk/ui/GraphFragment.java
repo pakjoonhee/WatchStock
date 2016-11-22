@@ -4,11 +4,9 @@ package com.sam_chordas.android.stockhawk.ui;
  * Created by joonheepak on 11/18/16.
  */
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +46,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class TabFragment1 extends Fragment implements OnChartValueSelectedListener{
+public class GraphFragment extends Fragment implements OnChartValueSelectedListener{
     String yesterdayDate = getYesterdayDateString();
     String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
@@ -65,7 +63,7 @@ public class TabFragment1 extends Fragment implements OnChartValueSelectedListen
     private Button button;
     View rootView;
 
-    public TabFragment1() {
+    public GraphFragment() {
 
     }
 
@@ -76,7 +74,7 @@ public class TabFragment1 extends Fragment implements OnChartValueSelectedListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.tab_practice, container, false);
+        rootView = inflater.inflate(R.layout.graph_fragment, container, false);
 
         Bundle bundle = getActivity().getIntent().getExtras();
         String symbol = bundle.getString("symbol");

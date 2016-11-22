@@ -34,11 +34,4 @@
         android:elevation="5dp"
         android:layout_height="400dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="blah"
-        android:id="@+id/blah"/>
-
-
 </LinearLayout>
