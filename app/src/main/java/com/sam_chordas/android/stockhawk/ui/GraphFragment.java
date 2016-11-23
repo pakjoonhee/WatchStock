@@ -173,6 +173,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private String getYesterdayDateString() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
         return dateFormat.format(cal.getTime());
     }
 
