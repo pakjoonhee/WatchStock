@@ -14,8 +14,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_header_padding">8dp</dimen>
 
-    <dimen name="graph_current_price_text_size">20dp</dimen>
-    <dimen name="graph_date_price_text_size">18dp</dimen>
+    <dimen name="graph_current_price_text_size">30dp</dimen>
+    <dimen name="graph_date_price_text_size">20dp</dimen>
     <dimen name="graph_padding_right">8dp</dimen>
     <dimen name="graph_margin_bottom">8dp</dimen>
 

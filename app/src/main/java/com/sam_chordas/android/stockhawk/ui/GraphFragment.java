@@ -6,7 +6,9 @@ package com.sam_chordas.android.stockhawk.ui;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,6 +83,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         bidPrice = getArguments().getString(CURRENT_PRICE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -148,7 +151,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         theLine.setDrawCircles(false);
         theLine.setLineWidth(2f);
         theLine.setHighLightColor(Color.RED);
-        theLine.setColor(Color.RED);
+        theLine.setColor(getResources().getColor(R.color.color_primary, null));
         theLine.setDrawHorizontalHighlightIndicator(true);
 
 //        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
@@ -163,7 +166,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         mpAndroidChart.setDescription(null);
         mpAndroidChart.setData(data);
         mpAndroidChart.invalidate();
-        mpAndroidChart.setViewPortOffsets(15f, 200f, 15f, 15f);
+        mpAndroidChart.setScaleEnabled(false);
+        mpAndroidChart.setViewPortOffsets(15f, 200f, 15f, 200f);
         mpAndroidChart.setOnChartValueSelectedListener(this);
         mpAndroidChart.getLegend().setEnabled(false);
 
