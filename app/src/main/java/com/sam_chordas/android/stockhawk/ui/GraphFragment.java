@@ -163,6 +163,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         mpAndroidChart.setDescription(null);
         mpAndroidChart.setData(data);
         mpAndroidChart.invalidate();
+        mpAndroidChart.setViewPortOffsets(15f, 200f, 15f, 15f);
         mpAndroidChart.setOnChartValueSelectedListener(this);
         mpAndroidChart.getLegend().setEnabled(false);
 
@@ -186,9 +187,9 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        stockPrice.setText("" + e.getY());
+        stockPrice.setText("$" + e.getY());
         stockDate.setText(theStockDate.get((int)e.getX()));
-        currentPrice.setText(bidPrice);
+        currentPrice.setText("$" + bidPrice);
 
     }
 

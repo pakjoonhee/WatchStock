@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
     android:contentDescription="@string/line_graph">
 
@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -22,14 +21,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#3F51B5"/>
+
     <com.sam_chordas.android.stockhawk.utility.CustomViewPager
         android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="370dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_weight=".80"
+        android:paddingBottom="50dp"/>
 
 
 
