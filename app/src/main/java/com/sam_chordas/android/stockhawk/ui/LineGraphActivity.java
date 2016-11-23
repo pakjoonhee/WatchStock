@@ -53,44 +53,23 @@ import java.util.concurrent.ExecutionException;
  */
 public class LineGraphActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_graph);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        Bundle bundle = getIntent().getExtras();
-        Integer tabIndex = bundle.getInt("tab_index");
 
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        final CustomViewPager customViewPager = (CustomViewPager) findViewById(R.id.pager);
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        CustomViewPager customViewPager = (CustomViewPager) findViewById(R.id.pager);
+        customViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
+                LineGraphActivity.this));
+//        customViewPager.setCurrentItem(1);
         customViewPager.setPagingEnabled(false);
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-        customViewPager.setAdapter(adapter);
-        customViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                customViewPager.setCurrentItem(tab.getPosition());
-            }
+        customViewPager.setOffscreenPageLimit(3);
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
 
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(customViewPager);
     }
 
 }

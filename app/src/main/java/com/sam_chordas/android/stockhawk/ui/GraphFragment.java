@@ -41,19 +41,23 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class GraphFragment extends Fragment implements OnChartValueSelectedListener{
+public class GraphFragment extends Fragment implements OnChartValueSelectedListener {
+    public static final String ARG_PAGE = "ARG_PAGE";
+
+    private int mPage;
     String yesterdayDate = getYesterdayDateString();
     String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
     private String END_URL = "%20and%20startDate%20%3D%20\"" + threeMonthsDate + "\"%20and%20endDate%20%3D%20\"" + yesterdayDate + "\"&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
     private ArrayList<String> stockHistory = new ArrayList<>();
-    private ArrayList<String> dateStock = new ArrayList<>();
-    private ArrayList<String> retrievedStockHistory = new ArrayList<>();
+    private ArrayList<String> theStockDate = new ArrayList<>();
+    private ArrayList<String> theStockPrice = new ArrayList<>();
     private LineChart mpAndroidChart;
     private TextView stockPrice;
     private TextView stockDate;
@@ -63,19 +67,24 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private Button button;
     View rootView;
 
-    public GraphFragment() {
-
+    public static GraphFragment newInstance(int page) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_PAGE, page);
+        GraphFragment fragment = new GraphFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPage = getArguments().getInt(ARG_PAGE);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.graph_fragment, container, false);
-
         Bundle bundle = getActivity().getIntent().getExtras();
         String symbol = bundle.getString("symbol");
         bidPrice = bundle.getString("bid_price");
@@ -87,28 +96,28 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         currentPrice = (TextView) rootView.findViewById(R.id.current_price);
 
         try {
-            retrievedStockHistory = new AsyncHttpTask().execute(historyUrl).get();
+            theStockPrice = new AsyncHttpTask().execute(historyUrl).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < retrievedStockHistory.size(); i++) {
-            dateStock.add(retrievedStockHistory.get(i));
-            retrievedStockHistory.remove(i);
+        for (int i = 0; i < theStockPrice.size(); i++) {
+            theStockDate.add(theStockPrice.get(i));
+            theStockPrice.remove(i);
         }
 
-        float [] floatValues = new float[retrievedStockHistory.size()];
-        for (int i = 0; i < retrievedStockHistory.size(); i++) {
-            floatValues[i] = Float.parseFloat(retrievedStockHistory.get(i));
+        float [] floatValues = new float[theStockPrice.size()];
+        for (int i = 0; i < theStockPrice.size(); i++) {
+            floatValues[i] = Float.parseFloat(theStockPrice.get(i));
             Entry blah = new Entry((float)i, floatValues[i]);
             valsComp1.add(blah);
         }
 
-        dateValues = new String[dateStock.size()];
-        for (int i = 0; i < dateStock.size(); i++) {
-            dateValues[i] = (dateStock.get(i));
+        dateValues = new String[theStockDate.size()];
+        for (int i = 0; i < theStockDate.size(); i++) {
+            dateValues[i] = (theStockDate.get(i));
         }
 
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
@@ -178,7 +187,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         stockPrice.setText("" + e.getY());
-        stockDate.setText(dateStock.get((int)e.getX()));
+        stockDate.setText(theStockDate.get((int)e.getX()));
         currentPrice.setText(bidPrice);
     }
 
@@ -250,3 +259,5 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     }
 
 }
+
+
