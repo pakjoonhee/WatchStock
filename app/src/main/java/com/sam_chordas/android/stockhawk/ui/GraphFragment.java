@@ -41,16 +41,16 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
 public class GraphFragment extends Fragment implements OnChartValueSelectedListener {
-    public static final String ARG_PAGE = "ARG_PAGE";
-
-    private int mPage;
+    public static final String SYMBOL = "SYMBOL";
+    public static final String CURRENT_PRICE = "CURRENT_PRICE";
+    private String theSymbol;
+    private String bidPrice;
     String yesterdayDate = getYesterdayDateString();
     String threeMonthsDate = getThreeMonthsDateString();
     private String BASE_URL = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20";
@@ -63,13 +63,12 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private TextView stockDate;
     private TextView currentPrice;
     private String [] dateValues;
-    private String bidPrice;
-    private Button button;
     View rootView;
 
-    public static GraphFragment newInstance(int page) {
+    public static GraphFragment newInstance(String symbol, String currentPrice) {
         Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
+        args.putString(SYMBOL, symbol);
+        args.putString(CURRENT_PRICE, currentPrice);
         GraphFragment fragment = new GraphFragment();
         fragment.setArguments(args);
         return fragment;
@@ -78,7 +77,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
+        theSymbol = getArguments().getString(SYMBOL);
+        bidPrice = getArguments().getString(CURRENT_PRICE);
     }
 
     @Override
@@ -86,14 +86,13 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.graph_fragment, container, false);
         Bundle bundle = getActivity().getIntent().getExtras();
-        String symbol = bundle.getString("symbol");
-        bidPrice = bundle.getString("bid_price");
         mpAndroidChart = (LineChart) rootView.findViewById(R.id.mpandroidchart);
         List<Entry> lineData = new ArrayList<Entry>();
-        String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
+        String historyUrl = BASE_URL + "\"" + theSymbol + "\"" + END_URL;
         stockPrice = (TextView) rootView.findViewById(R.id.stock_price);
         stockDate = (TextView) rootView.findViewById(R.id.stock_date);
         currentPrice = (TextView) rootView.findViewById(R.id.current_price);
+
 
         try {
             theStockPrice = new AsyncHttpTask().execute(historyUrl).get();
@@ -189,6 +188,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         stockPrice.setText("" + e.getY());
         stockDate.setText(theStockDate.get((int)e.getX()));
         currentPrice.setText(bidPrice);
+
     }
 
     @Override

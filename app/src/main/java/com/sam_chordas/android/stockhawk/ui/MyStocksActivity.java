@@ -85,6 +85,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   MaterialDialog d;
   String userInput;
   private ArrayList<String> allSymbols;
+  private ArrayList<String> allPrices;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   private void forceRTLIfSupported()
@@ -147,6 +148,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                 String bidPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
                 lineGraph.putStringArrayListExtra("allsymbols", allSymbols);
+                lineGraph.putStringArrayListExtra("allprices", allPrices);
                 lineGraph.putExtra("position", position);
                 lineGraph.putExtra("symbol", symbol);
                 lineGraph.putExtra("bid_price", bidPrice);
@@ -371,10 +373,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mCursorAdapter.swapCursor(data);
     mCursor = data;
     mCursor.moveToFirst();
+    allPrices = new ArrayList<>();
     allSymbols = new ArrayList<>();
     while(!mCursor.isAfterLast()) {
-      String crap = mCursor.getString(mCursor.getColumnIndex("symbol"));
-      allSymbols.add(crap);
+      String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+      String currentPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
+      allSymbols.add(symbol);
+      allPrices.add(currentPrice);
       mCursor.moveToNext();
     }
 

@@ -60,9 +60,11 @@ public class LineGraphActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int thePosition = intent.getIntExtra("position", -1);
         ArrayList<String> allSymbols = intent.getStringArrayListExtra("allsymbols");
+        ArrayList<String> allPrices = intent.getStringArrayListExtra("allprices");
+        Log.d("allprices", String.valueOf(allPrices.get(0)));
 
         CustomViewPager customViewPager = (CustomViewPager) findViewById(R.id.pager);
-        customViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), allSymbols));
+        customViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), allSymbols, allPrices));
         customViewPager.setCurrentItem(thePosition);
         customViewPager.setPagingEnabled(false);
         customViewPager.setOffscreenPageLimit(allSymbols.size());

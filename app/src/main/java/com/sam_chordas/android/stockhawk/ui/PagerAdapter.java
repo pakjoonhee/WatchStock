@@ -14,9 +14,12 @@ import java.util.ArrayList;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     private ArrayList<String> allSymbols = new ArrayList<>();
-    public PagerAdapter(FragmentManager fm, ArrayList<String> allSymbols) {
+    private ArrayList<String> allPrices = new ArrayList<>();
+
+    public PagerAdapter(FragmentManager fm, ArrayList<String> allSymbols, ArrayList<String> allPrices) {
         super(fm);
         this.allSymbols = allSymbols;
+        this.allPrices = allPrices;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return GraphFragment.newInstance(position + 1);
+        return GraphFragment.newInstance(allSymbols.get(position), allPrices.get(position));
     }
 
     @Override
