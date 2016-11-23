@@ -57,17 +57,17 @@ public class LineGraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_graph);
+        Intent intent = getIntent();
+        int thePosition = intent.getIntExtra("position", -1);
+        ArrayList<String> allSymbols = intent.getStringArrayListExtra("allsymbols");
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         CustomViewPager customViewPager = (CustomViewPager) findViewById(R.id.pager);
-        customViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
-                LineGraphActivity.this));
-//        customViewPager.setCurrentItem(1);
+        customViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), allSymbols));
+        customViewPager.setCurrentItem(thePosition);
         customViewPager.setPagingEnabled(false);
-        customViewPager.setOffscreenPageLimit(3);
+        customViewPager.setOffscreenPageLimit(allSymbols.size());
 
 
-        // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(customViewPager);
     }

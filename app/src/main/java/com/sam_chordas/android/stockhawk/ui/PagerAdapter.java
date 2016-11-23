@@ -6,22 +6,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import java.util.ArrayList;
+
 /**
  * Created by joonheepak on 11/18/16.
  */
 
 public class PagerAdapter extends FragmentPagerAdapter {
-    private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
-    private Context context;
-
-    public PagerAdapter(FragmentManager fm, Context context) {
+    private ArrayList<String> allSymbols = new ArrayList<>();
+    public PagerAdapter(FragmentManager fm, ArrayList<String> allSymbols) {
         super(fm);
-        this.context = context;
+        this.allSymbols = allSymbols;
     }
 
     @Override
     public int getCount() {
-        return tabTitles.length;
+        return allSymbols.size();
     }
 
     @Override
@@ -32,6 +32,6 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         // Generate title based on item position
-        return tabTitles[position];
+        return allSymbols.get(position);
     }
 }

@@ -84,6 +84,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   String testing;
   MaterialDialog d;
   String userInput;
+  private ArrayList<String> allSymbols;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   private void forceRTLIfSupported()
@@ -137,14 +138,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-
     mCursorAdapter = new QuoteCursorAdapter(this, null);
+
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
                 mCursor.moveToPosition(position);
                 String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                 String bidPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
+                lineGraph.putStringArrayListExtra("allsymbols", allSymbols);
+                lineGraph.putExtra("position", position);
                 lineGraph.putExtra("symbol", symbol);
                 lineGraph.putExtra("bid_price", bidPrice);
                 startActivity(lineGraph);
@@ -367,6 +370,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
+    mCursor.moveToFirst();
+    allSymbols = new ArrayList<>();
+    while(!mCursor.isAfterLast()) {
+      String crap = mCursor.getString(mCursor.getColumnIndex("symbol"));
+      allSymbols.add(crap);
+      mCursor.moveToNext();
+    }
+
     ComponentName name = new ComponentName(this, CollectionWidget.class);
     int [] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
 

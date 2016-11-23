@@ -89,7 +89,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         String symbol = bundle.getString("symbol");
         bidPrice = bundle.getString("bid_price");
         mpAndroidChart = (LineChart) rootView.findViewById(R.id.mpandroidchart);
-        List<Entry> valsComp1 = new ArrayList<Entry>();
+        List<Entry> lineData = new ArrayList<Entry>();
         String historyUrl = BASE_URL + "\"" + symbol + "\"" + END_URL;
         stockPrice = (TextView) rootView.findViewById(R.id.stock_price);
         stockDate = (TextView) rootView.findViewById(R.id.stock_date);
@@ -111,8 +111,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         float [] floatValues = new float[theStockPrice.size()];
         for (int i = 0; i < theStockPrice.size(); i++) {
             floatValues[i] = Float.parseFloat(theStockPrice.get(i));
-            Entry blah = new Entry((float)i, floatValues[i]);
-            valsComp1.add(blah);
+            Entry theEntry = new Entry((float)i, floatValues[i]);
+            lineData.add(theEntry);
         }
 
         dateValues = new String[theStockDate.size()];
@@ -145,19 +145,19 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         yAxis.setDrawZeroLine(true);
         mpAndroidChart.getAxisRight().setEnabled(false);
 
-        LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
-        setComp1.setDrawCircles(false);
-        setComp1.setLineWidth(2f);
-        setComp1.setHighLightColor(Color.RED);
-        setComp1.setColor(Color.RED);
-        setComp1.setDrawHorizontalHighlightIndicator(true);
+        LineDataSet theLine = new LineDataSet(lineData, "Company 1");
+        theLine.setDrawCircles(false);
+        theLine.setLineWidth(2f);
+        theLine.setHighLightColor(Color.RED);
+        theLine.setColor(Color.RED);
+        theLine.setDrawHorizontalHighlightIndicator(true);
 
 //        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
 //        mv.setChartView(mpAndroidChart);
 //        mpAndroidChart.setMarker(mv);
 
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(setComp1);
+        dataSets.add(theLine);
 
         LineData data = new LineData(dataSets);
         data.setDrawValues(false);
