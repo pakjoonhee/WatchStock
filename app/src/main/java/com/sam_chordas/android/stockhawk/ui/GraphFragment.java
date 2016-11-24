@@ -165,6 +165,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         data.setDrawValues(false);
         mpAndroidChart.setDescription(null);
         mpAndroidChart.setData(data);
+        mpAndroidChart.setDrawGridBackground(true);
+        mpAndroidChart.setGridBackgroundColor(getResources().getColor(R.color.white, null));
         mpAndroidChart.invalidate();
         mpAndroidChart.setScaleEnabled(false);
         mpAndroidChart.setViewPortOffsets(15f, 200f, 15f, 200f);

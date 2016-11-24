@@ -77,8 +77,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Context mContext;
   private Cursor mCursor;
   boolean isConnected;
-  private ArrayList<String> reviewsList;
-  String author;
   boolean linkWorks;
   boolean linkReallyWorks = false;
   String testing;
@@ -144,14 +142,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
-                mCursor.moveToPosition(position);
-                String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
-                String bidPrice = mCursor.getString(mCursor.getColumnIndex("bid_price"));
                 lineGraph.putStringArrayListExtra("allsymbols", allSymbols);
                 lineGraph.putStringArrayListExtra("allprices", allPrices);
                 lineGraph.putExtra("position", position);
-                lineGraph.putExtra("symbol", symbol);
-                lineGraph.putExtra("bid_price", bidPrice);
                 startActivity(lineGraph);
               }
             }));
