@@ -43,6 +43,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -60,12 +61,15 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private ArrayList<String> stockHistory = new ArrayList<>();
     private ArrayList<String> theStockDate = new ArrayList<>();
     private ArrayList<String> theStockPrice = new ArrayList<>();
+    private ArrayList<String> reformedDates = new ArrayList<>();
+    private String[] dateSplit;
     private LineChart mpAndroidChart;
     private TextView stockPrice;
     private TextView stockDate;
     private TextView currentPrice;
     private String [] dateValues;
     View rootView;
+    private String monthString;
 
     public static GraphFragment newInstance(String symbol, String currentPrice) {
         Bundle args = new Bundle();
@@ -96,7 +100,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         stockDate = (TextView) rootView.findViewById(R.id.stock_date);
         currentPrice = (TextView) rootView.findViewById(R.id.current_price);
 
-
         try {
             theStockPrice = new AsyncHttpTask().execute(historyUrl).get();
         } catch (InterruptedException e) {
@@ -115,27 +118,11 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             floatValues[i] = Float.parseFloat(theStockPrice.get(i));
             Entry theEntry = new Entry((float)i, floatValues[i]);
             lineData.add(theEntry);
+
         }
-
-        dateValues = new String[theStockDate.size()];
-        for (int i = 0; i < theStockDate.size(); i++) {
-            dateValues[i] = (theStockDate.get(i));
-        }
-
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return dateValues[(int) value];
-            }
-
-            @Override
-            public int getDecimalDigits() {  return 0; }
-        };
 
         XAxis xAxis = mpAndroidChart.getXAxis();
         xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(formatter);
         xAxis.setDrawLabels(false);
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(false);
@@ -166,12 +153,12 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         mpAndroidChart.setDescription(null);
         mpAndroidChart.setData(data);
         mpAndroidChart.setDrawGridBackground(true);
-        mpAndroidChart.setGridBackgroundColor(getResources().getColor(R.color.white, null));
-        mpAndroidChart.invalidate();
-        mpAndroidChart.setScaleEnabled(false);
         mpAndroidChart.setViewPortOffsets(15f, 200f, 15f, 200f);
+        mpAndroidChart.setGridBackgroundColor(getResources().getColor(R.color.white, null));
+        mpAndroidChart.setScaleEnabled(false);
         mpAndroidChart.setOnChartValueSelectedListener(this);
         mpAndroidChart.getLegend().setEnabled(false);
+        mpAndroidChart.invalidate();
 
         return rootView;
     }
