@@ -100,6 +100,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         stockDate = (TextView) rootView.findViewById(R.id.stock_date);
         currentPrice = (TextView) rootView.findViewById(R.id.current_price);
 
+
         try {
             theStockPrice = new AsyncHttpTask().execute(historyUrl).get();
         } catch (InterruptedException e) {
