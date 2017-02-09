@@ -1,13 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
   signingConfigs {
     config {
-      keyAlias 'watchstock'
-      keyPassword 'shurbert10999'
-      storeFile file('/Users/joonheepak/keystores/watchstock.jks')
-      storePassword 'shurbert10999'
+      keyAlias keystoreProperties['keyAlias']
+      keyPassword keystoreProperties['keyPassword']
+      storeFile file(keystoreProperties['storeFile'])
+      storePassword keystoreProperties['storePassword']
     }
   }
   compileSdkVersion 23
