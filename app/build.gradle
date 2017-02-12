@@ -24,8 +24,8 @@ android {
     applicationId "com.joonhee_pak.watchstock"
     minSdkVersion 17
     targetSdkVersion 23
-    versionCode 1
-    versionName "1.0"
+    versionCode 3
+    versionName "2.0"
   }
   buildTypes {
     release {
