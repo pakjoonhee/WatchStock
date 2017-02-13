@@ -6,6 +6,7 @@ tracking, the user is presented with a graph that shows the stocks price over ti
 
 Data was sourced from the Yahoo Stock History API.
 
+![alt text](http://i1378.photobucket.com/albums/ah112/pakjoonhee90/watchstockfeature_zpscppsldtw.png)
 
 ![alt text](http://i1320.photobucket.com/albums/u528/pakjoonhee/stock1_revise_zpsv2sd2bap.png)
 
